@@ -1,0 +1,78 @@
+package com.canadafoodguide.spring.config;
+
+import java.util.Arrays;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoClientURI;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
+
+	@Configuration
+	public class SpringMongoConfig extends AbstractMongoConfiguration 
+	{
+		int CONNECTION_TIME_OUT_MS=1000;
+		int SOCKET_TIME_OUT_MS=1500;
+		int SERVER_SELECTION_TIMEOUT_MS=1500;
+		/*
+		  <mongo:mongo host="localhost" port="27017">
+    <mongo:options connections-per-host="4"
+                   connect-timeout="1000"
+                   max-wait-time="1500"
+                   auto-connect-retry="true"
+                   socket-keep-alive="true"
+                   socket-timeout="1500"
+                   write-fsync="true" />
+  </mongo:mongo>
+		 * @see org.springframework.data.mongodb.config.MongoConfigurationSupport#getDatabaseName()
+		 */
+
+	    @Override
+	    protected String getDatabaseName() { 
+	        return "sampledb";
+	    }
+	    //System.getenv("DATABASE_SERVICE_NAME")
+
+	    @Override
+	    @Bean
+	   /* public MongoClient mongoClient() { 
+	    	ServerAddress server = new ServerAddress("mongodb-1-thv2j", 27017);
+	    	MongoCredential credentials = MongoCredential.createCredential(System.getenv("MONGODB_USER"), getDatabaseName(), System.getenv("MONGODB_PASSWORD").toCharArray());
+	   
+	    	MongoClientOptions.Builder optionsBuilder = MongoClientOptions.builder();
+
+	    	optionsBuilder.connectTimeout(CONNECTION_TIME_OUT_MS);
+
+	    	optionsBuilder.socketTimeout(SOCKET_TIME_OUT_MS);
+
+	    	optionsBuilder.serverSelectionTimeout(SERVER_SELECTION_TIMEOUT_MS);
+	    	optionsBuilder.socketKeepAlive(true);
+
+	    	MongoClientOptions options = optionsBuilder.build();
+
+	     	MongoClient mongoClient = new MongoClient(server,  Arrays.asList(credentials),options);
+		    	
+	        return mongoClient;
+	    }*/
+	    
+	    public MongoClient mongoClient() { 
+	      	
+	     	String connectionURI = "mongodb://foodguide:foodguideadmin123@mongodb/sampledb";
+	     	MongoClient mongoClient = new MongoClient(new MongoClientURI(connectionURI));
+	     
+		    	
+	        return mongoClient;
+	    }
+	    
+	    @Bean
+	    public MongoTemplate mongoTemplate() throws Exception {
+	    
+	    	
+	        return new MongoTemplate(mongoClient(),getDatabaseName());
+	    }
+	}
+

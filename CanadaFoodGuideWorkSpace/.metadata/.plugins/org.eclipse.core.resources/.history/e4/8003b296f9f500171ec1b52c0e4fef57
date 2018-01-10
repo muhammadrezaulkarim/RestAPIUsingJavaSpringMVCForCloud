@@ -1,0 +1,25 @@
+package com.canadafoodguide.spring.model;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class DistinctAgeGroups 
+{
+
+	private List<String> ageGroups=new ArrayList<String>();
+
+	    public DistinctAgeGroups(List<String> ageGroups) 
+	    { 
+	       this.ageGroups= ageGroups;
+	    }
+	    
+	    
+	   	 public List<String> getAgeGroups() {
+	   		return ageGroups;
+	   	}
+
+	   	public void setAgeGroups(List<String> ageGroups) {
+	   		this.ageGroups = ageGroups;
+	   	}
+
+}

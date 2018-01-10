@@ -1,0 +1,21 @@
+package com.boraji.tutorial.spring.service;
+
+import java.util.List;
+
+import com.boraji.tutorial.spring.model.Servings_per_day;
+
+public interface Servings_per_dayService 
+{
+	public List<Servings_per_day> getAllServings();
+	public List<Servings_per_day> getServingsGenderAge(String gender, String age);
+	public List<Servings_per_day> getServingsByFgid(String fgid);
+	public List<Servings_per_day> getServingsByGender(String gender);
+	public List<Servings_per_day> getServingsByAgeGroup(String ageGroup);
+	public List<String> getDistinctAgeGroups();
+	public boolean insertServing(Servings_per_day singleServingOfADay);
+	public boolean updateServing(Servings_per_day singleServingOfADay);
+	public boolean deleteServing(Servings_per_day singleServingOfADay);
+	public boolean deleteServingByGenderAge(String gender, String age);
+	public boolean deleteServingByFgId(String fgid);
+
+}

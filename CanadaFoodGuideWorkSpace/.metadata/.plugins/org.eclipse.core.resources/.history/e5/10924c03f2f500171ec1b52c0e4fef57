@@ -1,0 +1,46 @@
+package com.canadafoodguide.spring.config;
+
+import java.util.Arrays;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoClientURI;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
+
+	@Configuration
+	public class SpringMongoConfig extends AbstractMongoConfiguration 
+	{
+		int CONNECTION_TIME_OUT_MS=1000;
+		int SOCKET_TIME_OUT_MS=1500;
+		int SERVER_SELECTION_TIMEOUT_MS=1500;
+
+	    @Override
+	    protected String getDatabaseName() { 
+	        return "sampledb";
+	    }
+
+	    @Override
+	    @Bean
+
+	    public MongoClient mongoClient() { 
+	      	
+	     	String connectionURI = "mongodb://foodguide:foodguideadmin123@mongodb/sampledb";
+	     	MongoClient mongoClient = new MongoClient(new MongoClientURI(connectionURI));
+	     
+		    	
+	        return mongoClient;
+	    }
+	    
+	    @Bean
+	    public MongoTemplate mongoTemplate() throws Exception {
+	    
+	    	
+	        return new MongoTemplate(mongoClient(),getDatabaseName());
+	    }
+	}
+

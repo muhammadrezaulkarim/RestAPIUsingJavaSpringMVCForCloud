@@ -1,0 +1,7 @@
+INDEX VERSION 1.3+C:\sumon\spring-tool-suite-3.8.1.RELEASE-e4.6-win32-x86_64\sts-bundle\sts-3.8.1.RELEASE\CanadaFoodGuideWorkSpace\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+2255274762.index
+1658522327.index
+1422284810.index
+289310768.index
+159800292.index
+2218198497.index

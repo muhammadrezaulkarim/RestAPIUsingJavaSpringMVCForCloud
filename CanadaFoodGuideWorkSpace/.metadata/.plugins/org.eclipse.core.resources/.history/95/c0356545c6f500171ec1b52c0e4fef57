@@ -1,0 +1,119 @@
+package com.boraji.tutorial.spring.controller;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+ 
+ 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+//import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import com.boraji.tutorial.spring.model.DistinctAgeGroups;
+import com.boraji.tutorial.spring.model.Foods;
+import com.boraji.tutorial.spring.model.Servings_per_day;
+import com.boraji.tutorial.spring.service.FoodsService;
+import com.boraji.tutorial.spring.service.Servings_per_dayService;
+import com.boraji.tutorial.spring.utility.AgeGroupExtractor;
+
+import javax.ws.rs.QueryParam;
+ 
+ 
+@RestController
+@ComponentScan("com.boraji.tutorial.spring")
+public class Servings_per_dayController {
+ 
+	@Autowired
+	private FoodsService foodService;
+	
+	@Autowired
+	private Servings_per_dayService servings_per_dayService;
+	
+
+	@RequestMapping(value = "/GetServingsByGenderAge", method = RequestMethod.GET)
+	public List<Servings_per_day> getAllServingsByGenderAge(@QueryParam("gender")String gender,
+    @QueryParam("age")String age)
+	{
+		
+		List<String> distinctGroups=getAllDistinctAgeGroups().getAgeGroups();
+		String ageGroup=AgeGroupExtractor.extractAgeGroup(distinctGroups, age);
+		
+		List<Servings_per_day> servings = servings_per_dayService.getServingsGenderAge(gender, ageGroup);
+		return servings;
+	}
+	
+	@RequestMapping(value = "/GetServings/Category/{categoryId}", method = RequestMethod.GET)
+	public List<Servings_per_day> getServingsByCategory(@PathVariable("categoryId") String categoryId){
+		
+		categoryId=categoryId.replaceAll("%20", " ");
+		List<Servings_per_day> servings = servings_per_dayService.getServingsByFgid(categoryId);
+		
+		System.out.println(servings);
+		
+		
+		return servings;
+	}
+	
+	@RequestMapping(value = "/GetServings/Gender/{genderCategory}", method = RequestMethod.GET)
+	public List<Servings_per_day> getServingsByGender(@PathVariable("genderCategory") String genderCategory){
+		
+		genderCategory=genderCategory.replaceAll("%20", " ");
+		//System.out.println("Category: " + categoryId);
+		List<Servings_per_day> servings = servings_per_dayService.getServingsByGender(genderCategory);
+		
+		System.out.println(servings);
+		
+		
+		return servings;
+	}
+	
+	@RequestMapping(value = "/GetServings/AgeGroup/{ageGroup}", method = RequestMethod.GET)
+	public List<Servings_per_day> getServingsByAgeGroup(@PathVariable("ageGroup") String ageGroup){
+		
+		ageGroup=ageGroup.replaceAll("%20", " ");
+		//System.out.println("Category: " + categoryId);
+		List<Servings_per_day> servings = servings_per_dayService.getServingsByAgeGroup(ageGroup);
+		
+		System.out.println(servings);
+		
+		
+		return servings;
+	}
+	
+	@RequestMapping(value = "/GetAllDailyServings", method = RequestMethod.GET)
+	public List<Servings_per_day> getAllServings(){
+		
+		List<Servings_per_day> servings = servings_per_dayService.getAllServings();
+		
+		
+		return servings;
+	}
+	
+	@RequestMapping(value = "/GetAllFoods", method = RequestMethod.GET)
+	public List<Foods> getAllFoods(){
+		
+		List<Foods> foods = foodService.getAllFoods();
+		
+		
+		return foods;
+	}
+	
+	@RequestMapping(value = "/GetAllDistinctAgeGroups", method = RequestMethod.GET, produces = "application/json")
+	public DistinctAgeGroups getAllDistinctAgeGroups(){
+		
+		List<String> ageGroups = servings_per_dayService.getDistinctAgeGroups();
+		
+		DistinctAgeGroups groups=new DistinctAgeGroups(ageGroups);
+		return groups;
+	}
+
+
+}
+

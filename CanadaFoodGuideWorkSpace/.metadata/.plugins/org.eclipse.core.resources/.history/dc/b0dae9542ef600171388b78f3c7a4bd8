@@ -1,0 +1,5 @@
+package com.canadafoodguide.spring.config;
+
+public class WebSecurityConfig {
+
+}

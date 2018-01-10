@@ -1,0 +1,207 @@
+package com.canadafoodguide.spring.dao;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.canadafoodguide.spring.config.SpringMongoConfig;
+import com.canadafoodguide.spring.model.Servings_per_day;
+import com.mongodb.client.MongoCursor;
+
+
+@Repository("Servings_per_dayDao")
+@Transactional
+@SuppressWarnings("unchecked")
+public class Servings_per_dayDaoImpl implements Servings_per_dayDao
+{
+	//@Autowired
+	//@Qualifier("mongoTemplate")
+	//private MongoTemplate mongoTemplate;
+	
+	private MongoOperations mongoOperations;
+	 
+	public Servings_per_dayDaoImpl()
+	{
+		mongoOperations = loadMongoConfiguration();
+	}
+	   private MongoOperations loadMongoConfiguration() {
+	        @SuppressWarnings("resource")
+	        ApplicationContext applicationContext = 
+	                 new AnnotationConfigApplicationContext(SpringMongoConfig.class);
+	        MongoOperations mongoOperation = (MongoOperations) applicationContext.getBean("mongoTemplate");
+	        
+	        return mongoOperation;
+	    }
+	
+	public List<Servings_per_day> getAllServings()
+	{
+		
+		List<Servings_per_day> listOfServings = mongoOperations.findAll(Servings_per_day.class);
+		
+		return listOfServings == null ? new ArrayList<Servings_per_day>() : listOfServings;
+		
+	}
+	public List<Servings_per_day> getServingsGenderAge(String gender, String ageGroup)
+	{
+		
+		Criteria criteria1 = Criteria.where("gender").is(gender);
+		
+		Query query = new Query();
+		query.addCriteria(criteria1);
+		query.addCriteria(
+			    new Criteria().andOperator(
+			    		Criteria.where("ages").is(ageGroup)
+			    )
+			);
+		
+		List<Servings_per_day> listOfServings =mongoOperations.find(query, Servings_per_day.class, "servings_per_day");
+		
+		return listOfServings == null ? new ArrayList<Servings_per_day>() : listOfServings ;
+	}
+	
+	public List<Servings_per_day> getServingsByFgid(String fgid)
+	{
+		Criteria criteria1 = Criteria.where("fgid").is(fgid);
+		
+		Query query = new Query();
+		query.addCriteria(criteria1);
+
+		List<Servings_per_day> listOfServings = mongoOperations.find(query, Servings_per_day.class, "servings_per_day");
+		
+		return listOfServings == null ? new ArrayList<Servings_per_day>() : listOfServings ;
+		
+	}
+	
+	public List<Servings_per_day> getServingsByGender(String gender)
+	{
+		Criteria criteria1 = Criteria.where("gender").is(gender);
+		
+		Query query = new Query();
+		query.addCriteria(criteria1);
+
+		List<Servings_per_day> listOfServings = mongoOperations.find(query, Servings_per_day.class, "servings_per_day");
+		
+		return listOfServings == null ? new ArrayList<Servings_per_day>() : listOfServings ;
+	}
+	
+	public List<Servings_per_day> getServingsByAgeGroup(String ageGroup)
+	{
+		Criteria criteria1 = Criteria.where("ages").is(ageGroup);
+		
+		Query query = new Query();
+		query.addCriteria(criteria1);
+
+		List<Servings_per_day> listOfServings = mongoOperations.find(query, Servings_per_day.class, "servings_per_day");
+		
+		return listOfServings == null ? new ArrayList<Servings_per_day>() : listOfServings ;
+		
+	}
+	
+	public List<String> getDistinctAgeGroups()
+	{
+		MongoCursor<String> distinctAgeGroupsIterator=mongoOperations.getCollection("servings_per_day").distinct("ages", String.class).iterator();
+		List<String> distinctAgeGroups=new ArrayList<String>();
+
+		if(distinctAgeGroupsIterator!=null)
+		{
+			while (distinctAgeGroupsIterator.hasNext())
+			{
+				distinctAgeGroups.add(distinctAgeGroupsIterator.next());
+			}
+		}
+		
+
+		return distinctAgeGroups ;
+	}
+	
+	
+	public boolean insertServing(Servings_per_day singleServingOfADay)
+	{
+		try{
+			mongoOperations.save(singleServingOfADay, "servings_per_day");
+		}
+		catch(Exception ex){
+			ex.printStackTrace();
+			return false;
+		}
+		
+		return true;
+		
+	}
+	public boolean updateServing(Servings_per_day singleServingOfADay)
+	{
+		try{
+			mongoOperations.save(singleServingOfADay, "servings_per_day");
+		}
+		catch(Exception ex){
+			ex.printStackTrace();
+			return false;
+		}
+		
+		return true;
+		
+	}
+	
+	public boolean deleteServing(Servings_per_day singleServingOfADay)
+	{
+		try{
+			mongoOperations.remove(singleServingOfADay, "servings_per_day");
+		}
+		catch(Exception ex){
+			ex.printStackTrace();
+			return false;
+		}
+		
+		return true;
+		
+	}
+	public boolean deleteServingByGenderAge(String gender, String age)
+	{
+		Criteria criteria1 = Criteria.where("gender").is(gender);
+		
+		Query query = new Query();
+		query.addCriteria(criteria1);
+		query.addCriteria(
+			    new Criteria().andOperator(
+			    		Criteria.where("ages").is(age)
+			    )
+			);
+		
+		try{
+			mongoOperations.remove(query, Servings_per_day.class, "servings_per_day");
+		}
+		catch(Exception ex){
+			ex.printStackTrace();
+			return false;
+		}
+		
+		return true;
+		
+	}
+	
+	public boolean deleteServingByFgId(String fgid)
+	{
+		Criteria criteria = Criteria.where("fgid").is(fgid);
+		
+		Query query = new Query(criteria);
+		
+		try{
+			mongoOperations.remove(query, Servings_per_day.class, "servings_per_day");
+		}
+		catch(Exception ex){
+			ex.printStackTrace();
+			return false;
+		}
+		
+		return true;
+		
+	}
+
+}

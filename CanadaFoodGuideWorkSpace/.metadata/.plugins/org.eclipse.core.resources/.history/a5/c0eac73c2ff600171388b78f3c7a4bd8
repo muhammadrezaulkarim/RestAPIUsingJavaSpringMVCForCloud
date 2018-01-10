@@ -1,0 +1,10 @@
+package com.canadafoodguide.spring.config;
+
+@Order(2)
+public class WebMvcSecurityApplicationInitializer extends AbstractSecurityWebApplicationInitializer {
+
+    public WebMvcSecurityApplicationInitializer() {
+        super(WebSecurityConfig.class);
+    }
+
+}

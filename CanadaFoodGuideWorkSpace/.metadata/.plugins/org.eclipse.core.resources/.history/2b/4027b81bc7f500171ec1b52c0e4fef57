@@ -1,0 +1,67 @@
+package com.canadafoodguide.spring.config;
+
+import java.util.Arrays;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
+
+	@Configuration
+	public class SpringMongoConfig extends AbstractMongoConfiguration 
+	{
+		int CONNECTION_TIME_OUT_MS=10000;
+		int SOCKET_TIME_OUT_MS=60000;
+		int SERVER_SELECTION_TIMEOUT_MS=30000;
+		/*
+		  <mongo:mongo host="localhost" port="27017">
+    <mongo:options connections-per-host="4"
+                   connect-timeout="1000"
+                   max-wait-time="1500"
+                   auto-connect-retry="true"
+                   socket-keep-alive="true"
+                   socket-timeout="1500"
+                   write-fsync="true" />
+  </mongo:mongo>
+		 * @see org.springframework.data.mongodb.config.MongoConfigurationSupport#getDatabaseName()
+		 */
+
+	    @Override
+	    protected String getDatabaseName() { 
+	        return "sampledb";
+	    }
+
+	    @Override
+	    @Bean
+	    public MongoClient mongoClient() { 
+	    	ServerAddress server = new ServerAddress("127.0.0.1", 27017);
+	    	MongoCredential credentials = MongoCredential.createCredential("foodguide", getDatabaseName(), "foodguideadmin123".toCharArray());
+	   
+	    	MongoClientOptions.Builder optionsBuilder = MongoClientOptions.builder();
+
+	    	optionsBuilder.connectTimeout(CONNECTION_TIME_OUT_MS);
+
+	    	optionsBuilder.socketTimeout(SOCKET_TIME_OUT_MS);
+
+	    	optionsBuilder.serverSelectionTimeout(SERVER_SELECTION_TIMEOUT_MS);
+	    	optionsBuilder.socketKeepAlive(true);
+
+	    	MongoClientOptions options = optionsBuilder.build();
+
+	     	MongoClient mongoClient = new MongoClient(server,  Arrays.asList(credentials),options);
+		    	
+	        return mongoClient;
+	    }
+	    
+	    @Bean
+	    public MongoTemplate mongoTemplate() throws Exception {
+	    
+	    	
+	        return new MongoTemplate(mongoClient(),getDatabaseName());
+	    }
+	}
+
