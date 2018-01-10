@@ -21,9 +21,8 @@ import com.mongodb.MongoClientURI;
 	    @Bean
 	    public MongoClient mongoClient() 
 	    { 
-	      	//for openshift cloud
-	     	String connectionURI = "mongodb://foodguide:foodguideadmin123@mongodb/sampledb";
-	    	//for local machine
+
+	    	//for local development machine only. For cloud we will have different setting
 	     	//String connectionURI = "mongodb://foodguide:foodguideadmin123@localhost/sampledb";
 	     	MongoClient mongoClient = new MongoClient(new MongoClientURI(connectionURI));
 	     
