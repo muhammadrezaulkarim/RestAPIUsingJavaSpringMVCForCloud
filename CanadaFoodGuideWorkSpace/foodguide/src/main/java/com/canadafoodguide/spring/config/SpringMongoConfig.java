@@ -23,7 +23,7 @@ import com.mongodb.MongoClientURI;
 	    { 
 
 	    	//for local development machine only. For cloud we will have different setting
-	     	//String connectionURI = "mongodb://foodguide:foodguideadmin123@localhost/sampledb";
+	     	String connectionURI = "mongodb://foodguide:foodguideadmin123@localhost/sampledb";
 	     	MongoClient mongoClient = new MongoClient(new MongoClientURI(connectionURI));
 	     
 	     	return mongoClient;
